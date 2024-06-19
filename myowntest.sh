@@ -26,7 +26,7 @@ cat << "EOF"
                        ✨ QNODE SERVICE UPDATER ✨
 ===========================================================================
 This script will update your Quilibrium node when running it as a service.
-It will run your ndoe form the release_autostart.sh file.
+It will run your node from the release_autostart.sh file.
 
 Follow the guide at https://docs.quilibrium.one
 
@@ -39,7 +39,60 @@ EOF
 
 sleep 7  # Add a 7-second delay
 
+VERSION="1.4.19.1"
 
+#==========================
+# GO UPGRADE
+#==========================
+
+# Check the currently installed Go version
+if go version &>/dev/null; then
+    INSTALLED_VERSION=$(go version | awk '{print $3}' | sed 's/go//')
+else
+    INSTALLED_VERSION="none"
+fi
+
+# If the installed version is not 1.22.4, proceed with the installation
+if [ "$INSTALLED_VERSION" != "1.22.4" ]; then
+    echo "Current Go version is $INSTALLED_VERSION. Proceeding with installation of Go 1.22.4..."
+
+    # Determine the architecture and OS only if installing a new version
+    ARCH=$(uname -m)
+    OS=$(uname -s)
+
+    # Determine the Go binary name based on the architecture and OS
+    if [ "$ARCH" = "x86_64" ]; then
+        if [ "$OS" = "Linux" ]; then
+            GO_BINARY="go1.22.4.linux-amd64.tar.gz"
+        elif [ "$OS" = "Darwin" ]; then
+            GO_BINARY="go1.22.4.darwin-amd64.tar.gz"
+        fi
+    elif [ "$ARCH" = "aarch64" ]; then
+        if [ "$OS" = "Linux" ]; then
+            GO_BINARY="go1.22.4.linux-arm64.tar.gz"
+        elif [ "$OS" = "Darwin" ]; then
+            GO_BINARY="go1.22.4.darwin-arm64.tar.gz"
+        fi
+    else
+        echo "Unsupported architecture: $ARCH"
+        exit 1
+    fi
+
+    # Download and install Go
+    wget https://go.dev/dl/$GO_BINARY > /dev/null 2>&1 || echo "Failed to download Go!"
+    sudo tar -xvf $GO_BINARY > /dev/null 2>&1 || echo "Failed to extract Go!"
+    sudo rm -rf /usr/local/go || echo "Failed to remove existing Go!"
+    sudo mv go /usr/local || echo "Failed to move Go!"
+    sudo rm $GO_BINARY || echo "Failed to remove downloaded archive!"
+    
+    echo "Go 1.22.4 has been installed successfully."
+else
+    echo "Go version 1.22.4 is already installed. No action needed."
+fi
+
+#==========================
+# NODE UPDATE
+#==========================
 
 # Step 1: Stop the ceremonyclient service if it exists
 echo "⏳ Stopping the ceremonyclient service if it exists..."
@@ -58,33 +111,18 @@ cd ~/ceremonyclient || { echo "❌ Error: Directory ~/ceremonyclient does not ex
 echo "✅ Discarding local changes in release_autorun.sh..."
 git checkout -- node/release_autorun.sh
 
-# Function to install a package if it is not already installed
-install_package() {
-    echo "⏳ Installing $1..."
-    if apt-get install -y $1; then
-        echo "✅ $1 installed successfully."
-    else
-        echo "❌ Failed to install $1. You will have to do this manually."
-    fi
-}
-
-# Install cpulimit
-install_package cpulimit
-
-# Install gawk
-install_package gawk
-
-echo "✅ cpulimit and gawk are installed and up to date."
-
-
 # Step 4: Download Binary
-echo "⏳ Downloading New Release..."
+echo "⏳ Downloading new release v$VERSION"
 
 # Set the remote URL and download
 cd  ~/ceremonyclient
 git remote set-url origin https://git.quilibrium-mirror.ch/agostbiro/ceremonyclient.git
+#git remote set-url origin https://source.quilibrium.com/quilibrium/ceremonyclient.git || git remote set-url origin https://git.quilibrium-mirror.ch/agostbiro/ceremonyclient.git
+git checkout main
+git branch -D release
 git pull
-git checkout release-cdn
+git checkout release
+
 
 echo "✅ Downloaded the latest changes successfully."
 
@@ -94,6 +132,10 @@ HOME=$(eval echo ~$HOME_DIR)
 # Use the home directory in the path
 NODE_PATH="$HOME/ceremonyclient/node"
 EXEC_START="$NODE_PATH/release_autorun.sh"
+
+#==========================
+# SERVICE UPDATE
+#==========================
 
 # Step 5: Re-Create or Update Ceremonyclient Service
 echo "🔧 Rebuilding Ceremonyclient Service..."
@@ -122,22 +164,17 @@ EOF
 else
     echo "🔍 Checking existing ceremonyclient service file..."
     
-     # Check if the required lines exist, if they are different, or if CPUQuota exists
-    if ! grep -q "WorkingDirectory=$NODE_PATH" "$SERVICE_FILE" || ! grep -q "ExecStart=$EXEC_START" "$SERVICE_FILE" || grep -q '^CPUQuota=[0-9]*%' "$SERVICE_FILE"; then
+    # Check if the required lines exist or if CPUQuota exists
+    if ! grep -q "WorkingDirectory=$NODE_PATH" "$SERVICE_FILE" || ! grep -q "ExecStart=$EXEC_START" "$SERVICE_FILE"; then
         echo "🔄 Updating existing ceremonyclient service file..."
         # Replace the existing lines with new values
         sudo sed -i "s|WorkingDirectory=.*|WorkingDirectory=$NODE_PATH|" "$SERVICE_FILE"
         sudo sed -i "s|ExecStart=.*|ExecStart=$EXEC_START|" "$SERVICE_FILE"
-        # Remove any line containing CPUQuota=x%
-        if grep -q '^CPUQuota=[0-9]*%' "$SERVICE_FILE"; then
-            echo "✅ CPUQuota line found. Deleting..."
-            sudo sed -i '/^CPUQuota=[0-9]*%/d' "$SERVICE_FILE"
-            echo "✅ CPUQuota line deleted. You don't need this anymore!"
-        fi
     else
         echo "✅ No changes needed."
     fi
 fi
+
 
 # Step 6: Start the ceremonyclient service
 echo "✅ Starting Ceremonyclient Service"
@@ -147,7 +184,7 @@ systemctl enable ceremonyclient
 service ceremonyclient start
 
 # Showing the node version and logs
-echo "🌟Your Qnode is now updated!"
+echo "🌟Your Qnode is now updated to V$VERSION !"
 echo ""
 echo "⏳ Showing the node log... (CTRL+C to exit)"
 echo ""
