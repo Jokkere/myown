@@ -16,8 +16,11 @@ if [ -z "$contract_address" ]; then
   exit 1
 fi
 
+# Prepend '0x' to the contract address
+new_contract_address="0x$contract_address"
+
 # Use awk to replace the address in the Solidity file
-awk -v old="0x13D69Cf7d6CE4218F646B759Dcf334D82c023d8e" -v new="$contract_address" '
+awk -v old="0x13D69Cf7d6CE4218F646B759Dcf334D82c023d8e" -v new="$new_contract_address" '
 {
   # Replace only the exact old address and ensure no duplication
   sub(old, new)
