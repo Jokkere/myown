@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Loop through numbers 1 to 5
-for i in {151..250}; do
+for i in {253..350}; do
   # Define the path to the configuration directory for the current number
   CONFIG_PATH="$HOME/ceremonyclient/node/$i"
 
@@ -20,7 +20,7 @@ for i in {151..250}; do
     echo "Coin address found: $coin_address for config $i"
     
     # Run the transfer command with the extracted coin address
-    ./qclient-2.0.2.3-linux-amd64 token transfer 0x0f28e47ba140f9f1d4d4c1129ab0acbfded4c6a90422ffccb4ee70728ec4fb3c "$coin_address" --config "$CONFIG_PATH"
+    ./qclient-2.0.2.3-linux-amd64 token transfer 0x0e0fe2d594fbf70def96296896d8f4b5fdcce2978e997f55d2a5a9159011b7dc "$coin_address" --config "$CONFIG_PATH"
   else
     echo "Coin address not found in the output for config $i."
   fi
