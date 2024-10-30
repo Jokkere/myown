@@ -12,7 +12,7 @@ if [[ -f "$CONFIG_FILE" ]]; then
   sed -i 's|/ip4/127.0.0.1/tcp/8337|""|g' "$CONFIG_FILE"
 
   # Replace '.config/keys.yml' with '/root/ceremonyclient/node/.config/keys.yml'
-  sed -i 's|.config/keys.yml|/root/ceremonyclient/node/.config/keys.yml|g' "$CONFIG_FILE"
+  sed -i 's|.config/store|/root/ceremonyclient/node/.config/store|g' "$CONFIG_FILE"
 
   echo "Replacement complete."
 else
