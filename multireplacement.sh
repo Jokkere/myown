@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Loop through numbers 1 to 50
-for i in {1..50}; do
+for i in {51..402}; do
   # Define the path to the YAML file for the current number
   CONFIG_FILE="/root/ceremonyclient/node/$i/config.yml"
 
