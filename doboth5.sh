@@ -10,7 +10,7 @@ for i in {35..402}; do
   if [[ -f "$CONFIG_FILE" ]]; then
     # Perform replacements in config.yml
     sed -i 's|/ip4/127.0.0.1/tcp/8337|""|g' "$CONFIG_FILE"
-    #sed -i "s|.config/store|/root/ceremonyclient/node/$i/.config/store|g" "$CONFIG_FILE"
+    sed -i "s|path: .config/store|path: /root/ceremonyclient/node/$i/.config/store|g" "$CONFIG_FILE"
     sed -i 's|/ip4/0.0.0.0/udp/8336/quic|/ip4/0.0.0.0/tcp/8336|g' "$CONFIG_FILE"
     
     echo "Replacement complete in $CONFIG_FILE."
