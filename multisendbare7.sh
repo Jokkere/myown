@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Loop through numbers 1 to 5
-for i in {1..110}; do
+for i in {5..110}; do
   # Define the path to the configuration directory for the current number
   CONFIG_PATH="$HOME/ceremonyclient/node/$i/.config"
 
