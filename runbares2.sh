@@ -3,7 +3,7 @@
 # Loop through numbers 1 to 200
 for i in {1..200}; do
   # Define the path to the configuration file for the current number
-  CONFIG_PATH="$HOME/ceremonyclient/node/$i/config.yml"
+  CONFIG_PATH="$HOME/ceremonyclient/node/$i/.config/config.yml"
 
   # Check if the config file exists
   if [[ -f "$CONFIG_PATH" ]]; then
