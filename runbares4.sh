@@ -6,7 +6,7 @@ for i in {1..200}; do
   CONFIG_PATH="$HOME/ceremonyclient/node/$i/.config"
 
   # Check if the config file exists
-  if [[ -f "$CONFIG_PATH" ]]; then
+  if [[ -d "$CONFIG_PATH" ]]; then
     # Run the token mint all command with the current config file and wait for it to complete
     echo "Running mint command for config $i..."
     ./qclient-2.0.2.3-linux-amd64 token mint all --config "$CONFIG_PATH"
