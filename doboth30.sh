@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Loop through numbers 1 to 402
-for i in {147..125}; do
+for i in {17..1}; do
   # Define the path to the configuration directory and file for the current number
   CONFIG_PATH="$HOME/ceremonyclient/node/$i/.config"
   CONFIG_FILE="$CONFIG_PATH/config.yml"
