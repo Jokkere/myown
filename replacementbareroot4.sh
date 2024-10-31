@@ -11,6 +11,9 @@ if [[ -f "$CONFIG_FILE" ]]; then
   # Replace '.config/keys.yml' with '/root/ceremonyclient/node/.config/keys.yml'
   sed -i 's|.config/store|/root/ceremonyclient/node/.config/store|g' "$CONFIG_FILE"
 
+  # Replace '/ip4/0.0.0.0/udp/8336/quic' with '/ip4/0.0.0.0/tcp/8336'
+  sed -i 's|/ip4/0.0.0.0/udp/8336/quic|/ip4/0.0.0.0/tcp/8336|g' "$CONFIG_FILE"
+
   echo "Replacement complete."
 else
   echo "Configuration file not found at $CONFIG_FILE"
