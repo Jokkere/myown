@@ -32,7 +32,7 @@ for i in {1..1}; do
     echo "Coin address found: $coin_address for config $i"
     
     # Run the transfer command with the extracted coin address
-    ./qclient-2.0.2.3-linux-amd64 token transfer 0x19ad76f5bde2a0a9a6d2a0141c37bccac4f3992993bda738d9222b35f2b5c584 "$coin_address" --config "$CONFIG_PATH"
+    ./qclient-2.0.2.3-linux-amd64 token transfer 0x09b45fb80d64046c4a3864e5a7e039046b46f914e215fc8936a3a440a72eef30 "$coin_address" --config "$CONFIG_PATH"
   else
     echo "Coin address not found in the output for config $i."
   fi
