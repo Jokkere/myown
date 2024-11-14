@@ -2,6 +2,7 @@
 for i in {1..1}; do
   # Define the path to the YAML file for the current number
   CONFIG_FILE="/root/ceremonyclient/node/$i/config.yml"
+  CONFIG_DIR="/root/ceremonyclient/node/$i"
 
   # Check if the file exists
   if [[ -f "$CONFIG_FILE" ]]; then
@@ -18,7 +19,7 @@ for i in {1..1}; do
   else
     echo "Configuration file not found at $CONFIG_FILE"
   fi
-  output=$(./qclient-2.0.2.3-linux-amd64 token coins --config "$CONFIG_PATH")
+  output=$(./qclient-2.0.2.3-linux-amd64 token coins --config "$CONFIG_DIR")
 
   # Print the output for debugging (optional)
   echo "Output for config $i:"
@@ -32,7 +33,7 @@ for i in {1..1}; do
     echo "Coin address found: $coin_address for config $i"
     
     # Run the transfer command with the extracted coin address
-    ./qclient-2.0.2.3-linux-amd64 token transfer 0x09b45fb80d64046c4a3864e5a7e039046b46f914e215fc8936a3a440a72eef30 "$coin_address" --config "$CONFIG_PATH"
+    ./qclient-2.0.2.3-linux-amd64 token transfer 0x09b45fb80d64046c4a3864e5a7e039046b46f914e215fc8936a3a440a72eef30 "$coin_address" --config "$CONFIG_DIR"
   else
     echo "Coin address not found in the output for config $i."
   fi
