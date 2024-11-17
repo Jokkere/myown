@@ -8,10 +8,10 @@ echo "Output from token coins command:"
 echo "$output"
 
 # Extract the first 15 coin addresses from the output
-coin_addresses=($(echo "$output" | grep -oP '(?<=Coin )[a-fA-F0-9x]+' | head -n 15))
+coin_addresses=($(echo "$output" | grep -oP '(?<=Coin )[a-fA-F0-9x]+' | head -n 13))
 
 # Check if we have at least 15 coin addresses
-if [[ ${#coin_addresses[@]} -eq 15 ]]; then
+if [[ ${#coin_addresses[@]} -eq 13 ]]; then
   # Construct the merge command with the first 15 coin addresses
   merge_command="./qclient-2.0.2.3-linux-amd64 token merge ${coin_addresses[@]} --config $HOME/ceremonyclient/node/.config"
   
