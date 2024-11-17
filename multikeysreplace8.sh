@@ -1,5 +1,5 @@
 # Loop through numbers 1 to 200
-for i in {1..10}; do
+for i in {2..20}; do
   # Define the path to the YAML file for the current number
   CONFIG_FILE="/root/ceremonyclient/node/$i/config.yml"
   CONFIG_DIR="/root/ceremonyclient/node/$i"
